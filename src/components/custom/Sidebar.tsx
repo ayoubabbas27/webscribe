@@ -16,15 +16,10 @@ import {
 } from "@/components/ui/select"
 import axios from "axios"
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist"
+import { Page, TreeNode } from "@/lib/types"
+import { useWebScribStore } from "@/hooks/use-webscrib-store"
 
 GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs"
-
-type TreeNode = {
-    id: string
-    name: string
-    description: string
-    children: TreeNode[]
-}
 
 const outputFormats = [
     'JSON',
@@ -39,7 +34,7 @@ const languages = [
 
 export function Sidebar() {
     const [file, setFile] = useState<File | null>(null)
-    const [fileContent, setFileContent] = useState<{ page: number; text: string; }[] | null>(null)
+    const [fileContent, setFileContent] = useState<Page[] | null>(null)
     const [language, setLanguage] = useState<string | null>(null)
     const [outputFormat, setOutputFormat] = useState<string | null>(null)
     const [websiteTree, setWebsiteTree] = useState<TreeNode>(
@@ -50,6 +45,7 @@ export function Sidebar() {
             children: [],
         }
     )
+    const { setGeneratedContent, setContentFormat } = useWebScribStore()
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
@@ -95,10 +91,11 @@ export function Sidebar() {
 
 
     const generateContent = async () => {
-        const payload = { fileContent, outputFormat, websiteTree, languages }
+        const payload = { fileContent, outputFormat, websiteTree, language }
         try {
             const response = await axios.post('/api/mistral_ai', payload);
-            console.log(response.data)
+            setGeneratedContent(response.data.content)
+            setContentFormat(outputFormat as string)
         } catch (error) {
             console.error("generateContent(): ERROR => ", error)
         }
