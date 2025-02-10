@@ -10,7 +10,7 @@ type WebScribStore = {
 export const useWebScribStore = create<WebScribStore>((set) => ({
     generatedContent: "",
     setGeneratedContent: (content) => set({ generatedContent: content }),
-    contentFormat: 'JSON',
+    contentFormat: '.json',
     setContentFormat: (format) => set({ contentFormat: format }),
 }))
 

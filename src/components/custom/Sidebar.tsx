@@ -22,9 +22,9 @@ import { useWebScribStore } from "@/hooks/use-webscrib-store"
 GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs"
 
 const outputFormats = [
-    'JSON',
-    'JavaScript',
-    'TypeScript'
+    '.json',
+    '.ts',
+    '.js'
 ]
 
 const languages = [
@@ -46,6 +46,7 @@ export function Sidebar() {
         }
     )
     const { setGeneratedContent, setContentFormat } = useWebScribStore()
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
@@ -92,12 +93,19 @@ export function Sidebar() {
 
     const generateContent = async () => {
         const payload = { fileContent, outputFormat, websiteTree, language }
+        setIsLoading(true)
         try {
             const response = await axios.post('/api/mistral_ai', payload);
-            setGeneratedContent(response.data.content)
+            let cleanedData = response.data.content.split('\n');
+            if (cleanedData.length > 2) {
+                cleanedData = cleanedData.slice(1, -1);
+            }
+            setGeneratedContent(cleanedData.join('\n'));
             setContentFormat(outputFormat as string)
         } catch (error) {
             console.error("generateContent(): ERROR => ", error)
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -171,6 +179,7 @@ export function Sidebar() {
                 <Button
                     className="w-full"
                     disabled={
+                        isLoading ||
                         file == null ||
                         fileContent === null ||
                         language === null ||
@@ -180,7 +189,11 @@ export function Sidebar() {
                     }
                     onClick={generateContent}
                 >
-                    Generate Content
+                    {isLoading ? (
+                        <span>Generating...</span>
+                    ) : (
+                        <span>Generate Content</span>
+                    )}
                 </Button>
             </SidebarFooter>
         </SidebarComponent>

@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { Sidebar } from "@/components/custom/Sidebar"
-import type React from "react" // Added import for React
+import type React from "react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,9 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <SidebarProvider>
-          <div className="flex h-screen">
+          <div className="w-full flex h-screen">
             <Sidebar />
-            <main className="flex-1 overflow-y-auto p-6">{children}</main>
+            <main className="flex-1 overflow-y-auto p-6 ">{children}</main>
           </div>
         </SidebarProvider>
       </body>

@@ -20,7 +20,7 @@ const genPrompt = (data: { fileContent: Page[], language: string, outputFormat: 
     const formattedTree: string = formatTree(websiteTree)
 
     return `
-  ### Extracted PDF Content:
+### Extracted PDF Content:
 ${formattedPages}
 
 ---
@@ -29,7 +29,12 @@ ${formattedTree}
 
 ---
 ### Task:
-Based on the content provided in the Extracted PDF Content, generate detailed and well-structured content for each section of the Website Structure. Ensure the content aligns with the descriptions and purpose of each section. The output should be formatted as a **${outputFormat}** file, containing content in a format that developers can easily integrate into their project. Use the language specified (${language}) and ensure the content is informative, concise, and relevant.
+Based on the Extracted PDF Content, generate detailed, structured content strictly adhering to the sections of the Website Hierarchy. Ensure the content aligns with the descriptions and purpose of each section. 
+
+#### Instructions:
+- The output **MUST ONLY** be a valid **${outputFormat}** file.
+- Do not include explanations, comments, or additional information outside the required code.
+- Write the content in **${language}** for easy developer integration.
 `;
 }
 

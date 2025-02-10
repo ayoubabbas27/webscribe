@@ -9,9 +9,7 @@ export async function POST(req: Request) {
             'user',
             { fileContent, outputFormat, websiteTree, language }
         )
-
         const responseContent = mistralResponse?.choices?.[0]?.message?.content;
-
         return NextResponse.json({ message: "Data received successfully", content: responseContent });
     } catch (error) {
         console.error("Mistral api endpoint : ", error);
